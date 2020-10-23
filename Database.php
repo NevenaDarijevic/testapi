@@ -1,4 +1,5 @@
 <?php
+//PHP MANUAL SAJT POGLEDATI
 class Database{
     //properties
 private $hostname="localhost";
@@ -8,17 +9,19 @@ private $dbname;
 private $dblink; //link ka bazi
 private $result; //rezultati nakon svakog kverija
 private $affected; //ukupan broj redova nad kojim je postojao uticaj posle sql queryja
-private $records;
+private $records;//ukupan broj redova baze koji su vraceni kroz rezultate
 
 
 //funkcije
-    function __construct($dbname){
-        $this->dbname=$dbname;
-        $this->Connect();
-
+    function __construct($par_dbname){ //konstruktor
+       // $this->dbname=$dbname;
+       $this->dbname=$par_dbname; //moze dolar ispred dbname i ne mora
+        $this->Connect(); //poziv funkcije odozdo
+//mora preko this jer su properties
     }
     function Connect(){
-        //za konekciju sa bazom
+        //musqli vraca niz objekata
+        //za konekciju sa bazom, mysqli je model za konkeciju sa bazom
         $this->dblink= new mysqli($this->hostname,$this->username, $this->password,$this->dbname);
         //proveravamo da li se desila greska na dblinku
         //erno da li je bilo greske, error gresku tacnu
@@ -42,15 +45,19 @@ private $records;
     }
     if(isset($this->result->affected_rows)){
         $this->affected=$this->result->affected_rows;
-            }
+     }
+     return true;
+        }else{
+        return false;
         }
     }
     function getResult(){
         return $this->result;
     }
+    //u select ide join jer su ove dve vezane tabele
     //stavicemo u select da se po defaultu poziva za novosti, a ako prosledimo neku drugu tabelu onda ce nad njom
     function select($table="novosti", $rows="*",$join_table="kategorije", $join_key1="kategorija_id",$join_key2="id" , $where=null, $order=null){
-        $q='SELECT '.$rows.'FROM '.$table;//tacke su konkatenacija stringova
+        $q='SELECT '.$rows.' FROM '.$table;//tacke su konkatenacija stringova
         //ako je postavljen join, where, order
         if($join_table!=null){
             $q.= ' JOIN '.$join_table.' ON '.$table.'.'.$join_key1.'='.$join_table.'.'.$join_key2  ;    //  .= kao +=
@@ -82,6 +89,30 @@ return true;
 else{
     return false;
 }
+}
+
+
+function update($table, $id, $keys, $values){
+    $query_values="";
+    $set_query=array();
+    for($i=0;$i<sizeof($keys);$i++){
+        $set_query[]="$keys[$i] = $values[$i]";
+    }
+    $query_values=implode(",", $set_query);
+    $q="UPDATE $table SET($query_values) WHERE id=$id";
+    if($this->ExecuteQuery($q) && $this->affected>0)
+    {
+    return true;    
+    }else{return false;}
+
+}
+function delete($table, $id, $id_value){
+    $q="DELETE FROM $table WHERE $table.$id=$id_value ";
+    if($this->ExecuteQuery($q)){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 }

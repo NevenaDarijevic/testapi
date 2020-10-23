@@ -22,7 +22,7 @@ include "obrada.php";
     <h1>Forma za manipulaciju sa API-em</h1>
 
     <!-- Radio button grupa za odabir tipa tabele iz baze koji želimo da menjamo -->
-    <form action="" method="post">
+    <form action="" method="post"> <!--dodala ovde da je post metod-->
         <div id="odabir_tabele">
             <input type="radio" name="odabir_tabele" id="radio_kategorija" value="kategorija">
             <label for="radio_kategorija">kategorija</label>
@@ -65,7 +65,7 @@ include "obrada.php";
                 $mydb->select("kategorije","*",null, null, null);
                 while($red=$mydb->getResult()->fetch_object()): //napravili smo neki red kao, ovo fetch je mysqli funkcija koja se izvrsava nad rezultatima kverija
                  //sve dok postoji red kreiracemo novu opciju ?>
-                <option value="<?php  echo $red->id  ?>"><?php   echo $red->kategorija   ?></option>
+                <option value="<?php  echo $red->id;  ?>"><?php   echo $red->kategorija;   ?></option>
                  <?php endwhile;?>    
             </select>
         </div>
@@ -116,7 +116,7 @@ include "obrada.php";
 
         </div>
         <div id="submit">
-            <input type="submit" name="posalji" value="Posalji zahtev">Posalji zahtev</button>
+            <input type="submit" name="posalji" value="Posalji zahtev">Posalji zahtev</input>
         </div>
     </form>
     
@@ -312,7 +312,7 @@ include "obrada.php";
 
     $("input[name=http_zahtev]").on('click',prikaziBlok);
     $("input[name=odabir_tabele]").on('click',resetHTTP);
-    $("button").on('click', posaljiZahtev);
+    //$("button").on('click', posaljiZahtev);
 
 
 
