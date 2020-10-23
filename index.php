@@ -10,11 +10,19 @@
     integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
     crossorigin="anonymous"></script>
 </head>
+<?php  //povezali sa bazom
+//include "Database.php";
+//$mydb=new Database("rest"); OVA DVA SMO OBRISALI KAD SMO DODALI OBRADU JER SU OVE DVE LINIJE
+//VEC U OBRADI INKLUDOVANE PA NE MOGU DVA PUTA DA SE INKLUDUJU
+echo "<body style='background-color:white'>";
+include "obrada.php";
+?>
+
 <body>
     <h1>Forma za manipulaciju sa API-em</h1>
 
     <!-- Radio button grupa za odabir tipa tabele iz baze koji želimo da menjamo -->
-    <form action="">
+    <form action="" method="post">
         <div id="odabir_tabele">
             <input type="radio" name="odabir_tabele" id="radio_kategorija" value="kategorija">
             <label for="radio_kategorija">kategorija</label>
@@ -44,6 +52,7 @@
         <!-- Div sekcija za POST formu za novosti -->
 
         <div id="novosti_post">
+           
             <input type="text" name="naslov_novosti" placeholder="Unesite naslov novosti">
             <br>
             <textarea name="tekst_novosti" id="tekst_novosti" cols="30" rows="10" placeholder="Unesite tekst novosti"></textarea>
@@ -51,10 +60,13 @@
 
             <label for="kategorija_odabir">Kategorija:</label>
             <select name="kategorija_odabir" id="kategorija_odabir">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+                <?php
+                //OVO SVE JE DA BI MOGLA IZ PADAJUCEG MENIJA DA IZABEREM KATEGORIJU NOVOSTI NA OSNOVU NAZIVA, A NE IDIJA
+                $mydb->select("kategorije","*",null, null, null);
+                while($red=$mydb->getResult()->fetch_object()): //napravili smo neki red kao, ovo fetch je mysqli funkcija koja se izvrsava nad rezultatima kverija
+                 //sve dok postoji red kreiracemo novu opciju ?>
+                <option value="<?php  echo $red->id  ?>"><?php   echo $red->kategorija   ?></option>
+                 <?php endwhile;?>    
             </select>
         </div>
 
@@ -91,9 +103,7 @@
             <label for="kategorija_odabir_put">Odaberite novu kategoriju:</label>
             <select name="kategorija_odabir_put" id="kategorija_odabir_put">
                 <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
+                
             </select>
             
         </div>
@@ -106,7 +116,7 @@
 
         </div>
         <div id="submit">
-            <button type="button">Posalji zahtev</button>
+            <input type="submit" name="posalji" value="Posalji zahtev">Posalji zahtev</button>
         </div>
     </form>
     
